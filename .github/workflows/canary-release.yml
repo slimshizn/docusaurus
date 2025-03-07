@@ -1,11 +1,14 @@
 name: Canary Release
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
       - docusaurus-v**
     paths:
+      - .github/workflows/canary-release.yml
+      - package.json
       - packages/**
 
 permissions:
@@ -17,13 +20,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # v3
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
         with:
           fetch-depth: 0 # Needed to get the commit number with "git rev-list --count HEAD"
       - name: Set up Node
-        uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # v3
+        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
         with:
-          node-version: '16'
+          node-version: lts/*
           cache: yarn
       - name: Prepare git
         run: |
@@ -38,7 +41,7 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
       - name: Installation
-        run: yarn
+        run: yarn || yarn || yarn
       - name: Publish Canary release
         run: |
           yarn canary
